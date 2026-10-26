@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>九州冬季自駕之旅</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🗾</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <h1 id="tripTitle">九州冬季自駕之旅</h1>
+    <p id="tripRange" class="range"></p>
+  </div>
+  <div class="controls">
+    <div class="seg" id="versionSeg" role="tablist" aria-label="切換版本"></div>
+    <button class="btn ghost" id="editBtn" type="button">編輯行程</button>
+  </div>
+  <nav class="tabs" id="tabs" aria-label="頁面">
+    <button type="button" data-tab="map" class="on">路線與行程</button>
+    <button type="button" data-tab="info">航班與住宿</button>
+    <button type="button" data-tab="budget">費用推估</button>
+    <button type="button" data-tab="check">行前清單</button>
+  </nav>
+</header>
+
+<div class="editbar" id="editbar" hidden>
+  <span class="editbar-state" id="editState">編輯中</span>
+  <div class="editbar-actions">
+    <button class="btn ghost small" id="downloadBtn" type="button">下載備份</button>
+    <button class="btn ghost small" id="cancelBtn" type="button">結束編輯</button>
+    <button class="btn primary small" id="saveBtn" type="button">儲存到 GitHub</button>
+  </div>
+</div>
+
+<main>
+  <section id="view-map" class="view on">
+    <div class="mapwrap"><div id="map" aria-label="路線地圖"></div>
+      <div class="pickhint" id="pickHint" hidden>點地圖上的位置來設定「<span id="pickName"></span>」 <button type="button" class="btn small ghost" id="pickCancel">取消</button></div>
+    </div>
+    <aside class="panel">
+      <div class="daychips" id="dayChips"></div>
+      <div id="dayList"></div>
+    </aside>
+  </section>
+  <section id="view-info" class="view page"></section>
+  <section id="view-budget" class="view page"></section>
+  <section id="view-check" class="view page"></section>
+</main>
+
+<dialog id="pwDialog">
+  <form method="dialog" id="pwForm">
+    <h2>輸入編輯密碼</h2>
+    <p class="muted">只有知道密碼的人可以修改行程。</p>
+    <input type="password" id="pwInput" autocomplete="current-password" required placeholder="密碼">
+    <p class="err" id="pwErr" hidden></p>
+    <div class="row-end">
+      <button type="button" class="btn ghost" id="pwCancel">取消</button>
+      <button type="submit" class="btn primary" id="pwOk">開始編輯</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="locDialog">
+  <form method="dialog" id="locForm">
+    <h2>設定位置</h2>
+    <p class="muted">搜尋地點名稱（日文或英文最準），或改用點地圖。</p>
+    <div class="row"><input type="search" id="locQuery" placeholder="例如：櫛田神社"><button type="submit" class="btn primary">搜尋</button></div>
+    <ul class="locresults" id="locResults"></ul>
+    <div class="row-end">
+      <button type="button" class="btn ghost" id="locClear">清除位置</button>
+      <button type="button" class="btn ghost" id="locPick">改用點地圖</button>
+      <button type="button" class="btn ghost" id="locClose">關閉</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.2/Sortable.min.js"></script>
+<script src="config.js"></script>
+<script src="assets/crypto.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>設定編輯密碼</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  body { display: block; background: var(--mist); }
+  .wrap { max-width: 620px; margin: 0 auto; padding: 32px 20px 64px; }
+  h1 { font-size: 26px; font-weight: 900; margin: 0 0 6px; }
+  .card { background: #fff; border-radius: 14px; padding: 22px; margin-top: 20px; display: grid; gap: 14px; }
+  label { display: grid; gap: 4px; font-weight: 500; }
+  label small { color: var(--ink-2); font-weight: 400; }
+  input { padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px; width: 100%; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  pre { background: var(--ink); color: #E6EDF1; padding: 14px; border-radius: 10px; overflow-x: auto; font-size: 13px; white-space: pre-wrap; word-break: break-all; }
+  .ok { color: var(--moss); font-weight: 700; margin: 0; }
+  @media (max-width: 560px) { .two { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>設定編輯密碼</h1>
+  <p class="muted">這一頁只要做一次。完成後，知道密碼的人就能在行程網站上直接修改並儲存。金鑰會用你的密碼加密後才存進 repo，不會以明文出現。</p>
+
+  <form class="card" id="f">
+    <div class="two">
+      <label>GitHub 帳號名稱<input id="owner" required placeholder="例如：mytrip2027" autocomplete="off"></label>
+      <label>Repo 名稱<input id="repo" required placeholder="例如：kyushu-trip" autocomplete="off"></label>
+    </div>
+    <label>分支 <small>沒改過就是 main</small><input id="branch" value="main" required></label>
+    <label>GitHub 金鑰（Fine-grained token）<small>開頭是 github_pat_，建立方式請看 README</small><input id="token" type="password" required autocomplete="off"></label>
+    <div class="two">
+      <label>編輯密碼 <small>至少 10 個字，建議用一句話</small><input id="pw" type="password" minlength="10" required autocomplete="new-password"></label>
+      <label>再輸入一次<input id="pw2" type="password" minlength="10" required autocomplete="new-password"></label>
+    </div>
+    <p class="err" id="err" hidden></p>
+    <div class="row-end"><button class="btn primary" id="go" type="submit">驗證並寫入設定</button></div>
+  </form>
+
+  <div class="card" id="done" hidden>
+    <p class="ok" id="okMsg"></p>
+    <p class="muted" id="okNext"></p>
+    <pre id="out"></pre>
+    <div class="row-end"><button class="btn ghost" id="copy" type="button">複製設定內容</button><a class="btn" href="index.html">回到行程網站</a></div>
+  </div>
+</div>
+<script src="assets/crypto.js"></script>
+<script>
+const $ = (id) => document.getElementById(id);
+$('f').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const err = $('err'), go = $('go');
+  err.hidden = true;
+  if ($('pw').value !== $('pw2').value) { err.textContent = '兩次輸入的密碼不一樣。'; err.hidden = false; return; }
+  const cfg = { owner: $('owner').value.trim(), repo: $('repo').value.trim(), branch: $('branch').value.trim() || 'main', dataPath: 'data/itinerary.json' };
+  const token = $('token').value.trim();
+  go.disabled = true; go.textContent = '處理中…';
+  try {
+    const info = await GitHub.checkRepo(cfg, token);
+    if (info.permissions && info.permissions.push === false) throw new Error('這把金鑰沒有寫入權限。請把 Contents 權限設為 Read and write。');
+    cfg.enc = await TripCrypto.encrypt(token, $('pw').value);
+    const text = '// 由 setup.html 產生，請勿手動修改 enc 內容。\nwindow.TRIP_CONFIG = ' + JSON.stringify(cfg, null, 2) + ';\n';
+    $('out').textContent = text;
+    $('done').hidden = false;
+    try {
+      const cur = await GitHub.getFile(cfg, token, 'config.js');
+      await GitHub.putFile(cfg, token, 'config.js', text, cur && cur.sha, '設定編輯密碼');
+      $('okMsg').textContent = '設定完成，已自動寫入 repo 的 config.js。';
+      $('okNext').textContent = '大約 1 分鐘後回到行程網站，按「編輯行程」並輸入密碼就能開始修改。';
+    } catch (x) {
+      $('okMsg').textContent = '金鑰驗證成功，但自動寫入失敗。';
+      $('okNext').textContent = '請把下面的內容複製起來，到 GitHub 上打開 config.js，整個取代後存檔。';
+    }
+    $('token').value = '';
+  } catch (x) {
+    err.textContent = x.message; err.hidden = false;
+  } finally { go.disabled = false; go.textContent = '驗證並寫入設定'; }
+});
+$('copy').addEventListener('click', async () => {
+  try { await navigator.clipboard.writeText($('out').textContent); $('copy').textContent = '已複製'; } catch (e) { $('copy').textContent = '請手動選取複製'; }
+});
+</script>
+</body>
+</html>

@@ -225,3 +225,5 @@ dialog input { width: 100%; padding: 9px 12px; border: 1px solid var(--line); bo
 @media (prefers-reduced-motion: reduce) {
   .toast { transition: none; }
 }
+
+.note a, .hotel a, td a, .checks a { color: var(--focus); word-break: break-all; }

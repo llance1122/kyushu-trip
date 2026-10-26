@@ -1,12 +1,8 @@
-// 由 setup.html 產生，請勿手動修改 enc 內容。
+// 這個檔案會由 setup.html 自動產生並寫入，平常不需要手動修改。
 window.TRIP_CONFIG = {
-  "owner": "llance1122",
-  "repo": "kyushu-trip",
-  "branch": "main",
-  "dataPath": "data/itinerary.json",
-  "enc": {
-    "salt": "zQqWRbb4BBhrJd+XzakHAA==",
-    "iv": "efFyrmv8xBRnDKEO",
-    "ct": "/1XtSeDeF3OM6Aza1JlnWWiraWfNGgf5VPmjSLQc8BKoljsSr17phlNAPISUsl0tEojpFzFSk2eAFkzf+NHtTrmi2R/jFlEhn4Hy72zpnjnGuyhNzDf4DPrYPOhULTUQdxB1u8VYJZTXfxuSuA=="
-  }
+  owner: "",          // GitHub 帳號名稱
+  repo: "",           // repo 名稱
+  branch: "main",
+  dataPath: "data/itinerary.json",
+  enc: null           // 加密後的金鑰（由 setup.html 產生）
 };

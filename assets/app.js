@@ -8,6 +8,7 @@
   const $ = (sel, el = document) => el.querySelector(sel);
   const $$ = (sel, el = document) => [...el.querySelectorAll(sel)];
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const linkify = (s) => esc(s).replace(/https?:\/\/[^\s<>"'）)]+/g, (u) => `<a href="${u}" target="_blank" rel="noopener">${u}</a>`);
   const ver = () => S.data.versions[S.v];
   const color = (d) => COLORS[d % COLORS.length];
   const hasLoc = (s) => typeof s.lat === 'number' && typeof s.lng === 'number';
@@ -193,7 +194,7 @@
                 <span class="n ${loc ? '' : 'none'}">${loc ? n : ''}</span>
                 <div class="body">
                   <p class="name">${esc(s.name)}<span class="type">${TYPES[s.type] || ''}</span></p>
-                  ${s.note ? `<p class="note">${esc(s.note)}</p>` : ''}
+                  ${s.note ? `<p class="note">${linkify(s.note)}</p>` : ''}
                   ${loc ? `<a class="nav" href="${navUrl(s)}" target="_blank" rel="noopener">Google Maps 導航</a>` : ''}
                 </div>
                 <span class="rail"></span>
@@ -244,20 +245,20 @@
     $('#view-info').innerHTML = `<div class="page-inner"><h2>航班與住宿</h2><p class="lead">${esc(v.name)}｜${esc(v.range)}</p>
       ${S.editing ? `<h3>航班</h3>${editCards('flights', FLIGHT_F, '新增航班')}<h3>住宿</h3>${editCards('hotels', HOTEL_F, '新增住宿')}` : `
       <div class="flights">${flights.map((f) => `<div class="flight"><div class="leg">${esc(f.leg)}｜${esc(f.date)}｜${esc(f.flight)}</div>
-        <div class="time">${esc(f.time)}</div><div class="meta">${esc(f.route)}</div><div class="price">${esc(f.price)} ／人（未含稅與行李）</div></div>`).join('')}</div>
+        <div class="time">${esc(f.time)}</div><div class="meta">${esc(f.route)}</div><div class="price">${esc(f.price)} ／人</div></div>`).join('')}</div>
       <h3>住宿</h3>${hotels.map((h) => `<div class="hotel"><h4>${esc(h.name)}</h4><div class="price">${esc(h.price)}</div>
-        <p>${esc(h.dates)}｜${esc(h.room)}</p>${h.note ? `<p>${esc(h.note)}</p>` : ''}</div>`).join('')}`}</div>`;
+        <p>${esc(h.dates)}｜${esc(h.room)}</p>${h.note ? `<p>${linkify(h.note)}</p>` : ''}</div>`).join('')}`}</div>`;
 
     $('#view-budget').innerHTML = `<div class="page-inner"><h2>費用推估</h2><p class="lead">每人金額，住宿、租車、油錢以 4 人分攤，不含購物。</p>
       ${S.editing ? `<div class="ecard"><label>每人總額<input class="field" data-scope="ver" data-k="budgetTotal" value="${esc(v.budgetTotal)}"></label></div>${editCards('budget', BUDGET_F, '新增項目')}` : `
       <div class="total"><strong>${esc(v.budgetTotal)}</strong><span>每人預估總花費</span></div>
       <div class="tbl-wrap"><table><thead><tr><th>項目</th><th class="amt">NT$／人</th><th>說明</th></tr></thead><tbody>
-      ${budget.map((b) => `<tr><td>${esc(b.item)}</td><td class="amt">${esc(b.amount)}</td><td>${esc(b.note)}</td></tr>`).join('')}
+      ${budget.map((b) => `<tr><td>${esc(b.item)}</td><td class="amt">${esc(b.amount)}</td><td>${linkify(b.note)}</td></tr>`).join('')}
       </tbody></table></div><p class="footnote">匯率以 ¥1 ≈ NT$0.21 計算。實際價格以訂購當下為準。</p>`}</div>`;
 
     $('#view-check').innerHTML = `<div class="page-inner"><h2>行前清單</h2><p class="lead">${S.editing ? '勾選「已完成」後記得儲存。' : '完成的項目會劃線；要勾選請進入編輯。'}</p>
       ${S.editing ? editCards('checklist', CHECK_F, '新增項目') : `<ul class="checks">${checks.map((c) => `<li class="${c.done ? 'done' : ''}">
-        <input type="checkbox" ${c.done ? 'checked' : ''} disabled aria-label="${esc(c.title)}"><div><div class="ct">${esc(c.title)}</div><p>${esc(c.text)}</p></div></li>`).join('')}</ul>`}</div>`;
+        <input type="checkbox" ${c.done ? 'checked' : ''} disabled aria-label="${esc(c.title)}"><div><div class="ct">${esc(c.title)}</div><p>${linkify(c.text)}</p></div></li>`).join('')}</ul>`}</div>`;
   }
 
   function renderAll(fit) {

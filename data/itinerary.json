@@ -872,7 +872,7 @@
           "flight": "IT246",
           "route": "桃園 TPE → 佐賀 HSG",
           "time": "07:50 → 11:05",
-          "price": "NT$3,999"
+          "price": "NT$6,049"
         },
         {
           "leg": "回程",
@@ -880,7 +880,7 @@
           "flight": "IT241",
           "route": "福岡 FUK → 桃園 TPE",
           "time": "10:55 → 12:40",
-          "price": "NT$3,799"
+          "price": "NT$6,212"
         }
       ],
       "hotels": [
@@ -889,14 +889,14 @@
           "dates": "1/12–1/14（2 晚）",
           "room": "行政銀行室・早鳥優惠 30，35㎡，不含餐",
           "price": "¥37,484（約 NT$7,788）",
-          "note": "Check-in 15:00–22:00，Check-out 10:00。早鳥方案通常不可退費"
+          "note": "Check-in 15:00–22:00，Check-out 10:00。早鳥方案通常不可退費\nhttps://reurl.cc/LeOlvx"
         },
         {
           "name": "Ojanse 博多",
           "dates": "1/14–1/17（3 晚）",
           "room": "Family Room，40㎡ 整間公寓，有廚房、洗衣機",
-          "price": "NT$20,318（Trip.com）",
-          "note": "含稅與設施費，已扣會員優惠與 Trip Coins。1/10 前不用付款。住宿稅入住時現場收，約每人每晚 ¥200。無停車場"
+          "price": "NT$20,318",
+          "note": "1/10 前不用付款。住宿稅入住時現場收，約每人每晚 ¥200。無停車場\nhttps://reurl.cc/90k3dX"
         }
       ],
       "budgetTotal": "NT$30,000 – 36,000",
